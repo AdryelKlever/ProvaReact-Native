@@ -1,12 +1,21 @@
 import React, {useState} from 'react';
-import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet, Image, Linking, Alert} from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
 import Axios from 'axios';
 
 import email from 'react-native-email';
 
+import QRCodeScanner from 'react-native-qrcode-scanner';
+
 export default function Upload() {
+
+  ifScaned = e => {
+    Linking.openURL(e.data).catch(err => {
+      Alert.alert("QRCode invalido!", e.data);
+    })
+  }
+
   const [avatar, setAvatar] = useState();
 
   const imagePickerOptions = {
@@ -68,14 +77,14 @@ export default function Upload() {
 
   return (
     <View style={styles.container}>
-      <Image
+      {/* <Image
         source={{
           uri: avatar
             ? avatar.uri
             : 'https://mltmpgeox6sf.i.optimole.com/w:761/h:720/q:auto/https://redbanksmilesnj.com/wp-content/uploads/2015/11/man-avatar-placeholder.png',
         }}
         style={styles.avatar}
-      />
+      /> */}
       <TouchableOpacity
         style={styles.button}
         onPress={() =>
@@ -86,6 +95,23 @@ export default function Upload() {
       <TouchableOpacity style={styles.button} onPress={handleEmail}>
         <Text style={styles.buttonText}>Email</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleEmail}>
+        <Text style={styles.buttonText}>Google Maps</Text>
+      </TouchableOpacity>
+      <QRCodeScanner
+      containerStyle = {{backgroundColor: "#FFF"}}
+        onRead={this.ifScaned}
+        reactivate = {true}
+        permissionDialogMessage = "Permissão para acessar a camera"
+        reactivateTimeout = {10}
+        showMarker = {true}
+        markerStyle = {{borderColor: "#FFF", borderRadius: 10}}
+        bottomContent = {
+          <TouchableOpacity>
+            <Text style = {{fontSize: 21, color: 'rgb{0, 122, 255}' }}></Text>
+          </TouchableOpacity>
+        }
+      />
     </View>
   );
 }
