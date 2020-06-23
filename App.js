@@ -4,6 +4,8 @@ import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import Axios from 'axios';
 
+import email from 'react-native-email';
+
 export default function Upload() {
   const [avatar, setAvatar] = useState();
 
@@ -53,6 +55,17 @@ export default function Upload() {
     await Axios.post('http://localhost:3333/files', data);
   }
 
+  handleEmail = () => {
+    const to = ['jheson.ghost@gmail.com',] // string or array of email addresses
+    email(to, {
+        // Optional additional arguments
+        //cc: ['bazzy@moo.com', 'doooo@daaa.com'], // string or array of email addresses
+        //bcc: 'mee@mee.com', // string or array of email addresses
+        subject: 'Teste Envio email',
+        body: 'Escreva algo aqui!'
+    }).catch(console.error)
+  }
+
   return (
     <View style={styles.container}>
       <Image
@@ -70,8 +83,8 @@ export default function Upload() {
         }>
         <Text style={styles.buttonText}>Escolher imagem</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={uploadImage}>
-        <Text style={styles.buttonText}>Enviar imagem</Text>
+      <TouchableOpacity style={styles.button} onPress={handleEmail}>
+        <Text style={styles.buttonText}>Email</Text>
       </TouchableOpacity>
     </View>
   );
