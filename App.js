@@ -56,7 +56,7 @@ export default function Upload() {
   }
 
   handleEmail = () => {
-    const to = ['jheson.ghost@gmail.com',] // string or array of email addresses
+    const to = ['Enviar para quem ?',] // string or array of email addresses
     email(to, {
         // Optional additional arguments
         //cc: ['bazzy@moo.com', 'doooo@daaa.com'], // string or array of email addresses
