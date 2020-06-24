@@ -1,12 +1,21 @@
 import React, {useState} from 'react';
-import {View, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet, Image, Linking, Alert} from 'react-native';
 
 import ImagePicker from 'react-native-image-picker';
 import Axios from 'axios';
 
 import email from 'react-native-email';
 
+import QRCodeScanner from 'react-native-qrcode-scanner';
+
 export default function Upload() {
+
+  ifScaned = e => {
+    Linking.openURL(e.data).catch(err => {
+      Alert.alert("QRCode invalido!", e.data);
+    })
+  }
+
   const [avatar, setAvatar] = useState();
 
   const imagePickerOptions = {
@@ -56,11 +65,8 @@ export default function Upload() {
   }
 
   handleEmail = () => {
-    const to = ['Enviar para quem ?',] // string or array of email addresses
+    const to = ['Enviar para quem ?',]
     email(to, {
-        // Optional additional arguments
-        //cc: ['bazzy@moo.com', 'doooo@daaa.com'], // string or array of email addresses
-        //bcc: 'mee@mee.com', // string or array of email addresses
         subject: 'Teste Envio email',
         body: 'Escreva algo aqui!'
     }).catch(console.error)
@@ -68,24 +74,38 @@ export default function Upload() {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={{
-          uri: avatar
-            ? avatar.uri
-            : 'https://mltmpgeox6sf.i.optimole.com/w:761/h:720/q:auto/https://redbanksmilesnj.com/wp-content/uploads/2015/11/man-avatar-placeholder.png',
-        }}
-        style={styles.avatar}
+      <View style = {styles.view}>
+        {<Image
+          source={{
+            uri: avatar
+              ? avatar.uri
+              : 'https://mltmpgeox6sf.i.optimole.com/w:761/h:720/q:auto/https://redbanksmilesnj.com/wp-content/uploads/2015/11/man-avatar-placeholder.png',
+          }}
+          style={styles.avatar}
+        />}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            ImagePicker.showImagePicker(imagePickerOptions, imagePickerCallback)
+          }>
+          <Text style={styles.buttonText}>Foto</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleEmail}>
+          <Text style={styles.buttonText}>Email</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleEmail}>
+          <Text style={styles.buttonText}>Maps</Text>
+        </TouchableOpacity>
+      </View>
+      <QRCodeScanner
+        containerStyle = {{backgroundColor: "#FFF"}}
+        onRead={this.ifScaned}
+        reactivate = {true}
+        permissionDialogMessage = "Permissão para acessar a camera"
+        reactivateTimeout = {10}
+        showMarker = {true}
+        markerStyle = {{borderColor: "#FFF", borderRadius: 10}}
       />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          ImagePicker.showImagePicker(imagePickerOptions, imagePickerCallback)
-        }>
-        <Text style={styles.buttonText}>Escolher imagem</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleEmail}>
-        <Text style={styles.buttonText}>Email</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -96,21 +116,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  view: {
+    flex: 1,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   button: {
-    width: 150,
+    width: 60,
     height: 50,
     borderRadius: 3,
     backgroundColor: '#7159c1',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
+    width: 50,
+    height: 50,
   },
   avatar: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
     borderRadius: 50,
   },
 });
